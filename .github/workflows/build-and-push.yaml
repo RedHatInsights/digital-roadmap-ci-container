@@ -33,6 +33,19 @@ jobs:
           username: ${{ secrets.QUAY_USER }}
           password: ${{ secrets.QUAY_TOKEN }}
 
+      - name: Sanitize image tag
+        id: image-tag
+        env:
+          REF_NAME: ${{ github.head_ref || github.ref_name }}
+        run: |
+          tag=$(printf '%s' "$REF_NAME" | sed -E 's/[^A-Za-z0-9_.-]+/-/g; s/^[.-]+//; s/[.-]+$//')
+          tag=${tag:0:128}
+          if [ -z "$tag" ]; then
+            echo "Ref name '$REF_NAME' cannot be turned into a Docker tag" >&2
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
       - name: Build and push
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
@@ -42,5 +55,5 @@ jobs:
           provenance: false
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            quay.io/roadmap/ci:latest
-            quay.io/roadmap/ci:${{ github.head_ref || github.ref_name }}
+            quay.io/lightspeed-planning/digital-roadmap-ci-container:latest
+            quay.io/lightspeed-planning/digital-roadmap-ci-container:${{ steps.image-tag.outputs.tag }}
