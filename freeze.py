@@ -18,7 +18,7 @@ def main():
     print(f"🥶 Freezing Python {sys.version_info.major}.{sys.version_info.minor} {freeze_file.stem}...")
 
     # Create a fresh virtual environment
-    venv.create(venv_path, with_pip=True, clear=True)
+    venv.create(venv_path, with_pip=True, clear=True, symlinks=True)
     subprocess.check_output([python_bin, "-m", "pip", "install", "--upgrade", "pip"])
 
     # Install requirements with constraints
