@@ -7,6 +7,7 @@ faker
 fastapi[standard-no-fastapi-cloud-cli]
 graphviz
 greenlet
+kessel-sdk[auth]
 pre-commit
 prometheus-fastapi-instrumentator
 psycopg
